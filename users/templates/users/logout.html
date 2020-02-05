@@ -1,0 +1,14 @@
+{% extends "main/base.html" %}
+{% block title %}
+UVA Craigslist | Logged Out
+{% endblock title %}
+{% block content %}
+<h2 style="margin: 30px 25% 15px 25%">You have been logged out. </h2>
+<h5 style="margin: 15px 25% 15px 25%">Thanks for the quality time spent with us! </h5>
+<div class="border-top pt-3" style="margin: 15px 25% 15px 25%">
+    <small class="text-muted" style="">
+        <a href="{% url 'users:login' %}">Log In Again</a>
+    </small>
+</div>
+<br>
+{% endblock content %}

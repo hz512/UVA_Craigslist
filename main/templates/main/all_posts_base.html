@@ -1,0 +1,62 @@
+{% extends "main/base.html" %}
+{% load formatters %}
+{% block title %}
+
+{% block all_posts_title %}
+{% endblock %}
+
+{% endblock title %}
+
+{% block content %}
+<div style="margin: 40px 23% 20px 23%;">
+	<div class="border-bottom pt-3" style="margin: -30px 0 40px 0; text-align: center">
+        <small class="text-muted">
+           	<a class="ml-2" href="{% url 'main:all_posts' %}">All posts</a> | 
+            <a href= "{% url 'main:posts_30days' %}">Posts in past 30 days</a> |
+            <a href= "{% url 'main:posts_180days' %}">Posts in past 180 days</a>
+        </small>
+    </div>
+	{% for post in posts %}
+        <div class="media rounded p-1" style="border-bottom:1px solid #ccc!important; margin: 12px 0 13px 0;">
+            <div class="media-left">
+            <a href="#">
+                <img class="media-object mr-3 rounded" width="64" height="64" src="{{ post.cover.url }}"
+                    alt="Post image.">
+            </a>
+            </div>
+            <div class="media-body">
+            <div class="row justify-content-between">
+                <div class="inline-flex ml-3 text-primary">
+                <a href="{% url 'main:detail_post' post.owner.username post.post_id %}">
+                    <h5 class="media-heading">{{ post.title }}</h5>
+                </a>
+                </div>
+                <div class="inline-flex mr-3 text-muted"><h5>${{ post.price|floatformat:2 }}</h5></div>
+            </div>
+            <div class="text-muted">{{ post.description|brief_description_120 }}</div>
+            </div>
+        </div>
+	{% endfor %}
+    <div style="margin-top: 30px; text-align: center">
+        {% if is_paginated %}
+          {% if page_obj.has_previous %}
+            <a class="btn btn-outline-info mb-2" href="?page=1"><<</a>
+            <a class="btn btn-outline-info mb-2" href="?page={{ page_obj.previous_page_number }}"><</a>
+          {% endif %}
+
+          {% for num in page_obj.paginator.page_range %}
+            {% if page_obj.number == num %}
+              <a class="btn btn-info mb-2" href="?page={{ num }}">{{ num }}</a>
+            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+              <a class="btn btn-outline-info mb-2" href="?page={{ num }}">{{ num }}</a>
+            {% endif %}
+          {% endfor %}
+
+          {% if page_obj.has_next %}
+            <a class="btn btn-outline-info mb-2" href="?page={{ page_obj.next_page_number }}">></a>
+            <a class="btn btn-outline-info mb-2" href="?page={{ page_obj.paginator.num_pages }}">>></a>
+          {% endif %}
+        {% endif %}
+    </div>
+</div>
+{% endblock content %}

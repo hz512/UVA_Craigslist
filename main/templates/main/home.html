@@ -1,0 +1,12 @@
+{% extends "main/base.html" %}
+{% block title %}
+UVA Craigslist | Home
+{% endblock title %}
+
+{% block content %}
+  <div style="text-align: center">
+    <h1 style="margin:80px 0 150px 0">Welcome to UVA Craigslist</h1>
+    <button onclick="location.href='{% url 'main:index' %}'" type="button" class="btn btn-success" style="margin:10px 0 300px 0">
+             Head to the Main Page</button>  
+  </div>
+{% endblock content %}

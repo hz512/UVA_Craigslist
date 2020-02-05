@@ -1,0 +1,196 @@
+{% extends "main/base.html" %}
+{% load static %}
+{% load formatters %}
+{% load crispy_forms_tags %}
+{% block title %}
+UVA Craigslist | Profile
+{% endblock title %}
+{% block content %}
+{% if username_error %}
+    <p style="text-align: center"><strong>{{ username_error }}</strong></p>
+{% else %}
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="{% static 'main/login_profile.css' %}">
+
+    <div class="container emp-profile">
+        <form method="post">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="profile-img"  style="margin-top: -10px">
+                        <img class="account-img" src="{{ user.profile.image.url }}" alt="" style="width: 200px;"/>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="profile-head">
+                                <h1 style="margin-top: -10px">
+                                    {{ user.username }}
+                                </h1>
+                        <ul class="nav nav-tabs" id="myTab" role="tablist" style="margin-top: 35px">
+                            <li class="nav-item">
+                                <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">About</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Posts</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="profile-work">
+                        <p>Most Recent Post</p>
+                        <ul class="list-group list-group-flush">
+                            {% for post in most_recent_posts %}
+                                <li class="media list-unstycs324  led mb-3">
+                                    <img class="img-fluid thumbnail mr-2" src="{{ post.cover.url }}"
+                                            alt="{{ post.owner }}'s profile cover.">
+                                    <div class="media-body d-block">
+                                        <div class="d-inline-block">
+                                        <span><a href="{% url 'main:detail_post' post.owner.username post.post_id %}">
+                                            {{ post.title }}
+                                        </a></span>
+                                        <br>
+                                        <div id="post_content" class="small text-muted">
+                                                {{ post.description|brief_description }}
+                                            </div>
+                                        </div>
+                                        <div class="d-inline-block small text-muted font-italic">
+                                            Posted {{ post.pub_date|timesince }} ago by {{ post.owner }}
+                                        </div>
+                                    </div>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="tab-content profile-tab" id="myTabContent">
+                        <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <label>Name</label>
+                                        </div>
+                                        <div class="col-md-6">
+                                            {% if user.first_name %}
+                                                <p>{{ user.first_name }} {{ user.last_name }}</p>
+                                            {% else %}
+                                                <p>None</p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <label>Computing ID</label>
+                                        </div>
+                                        <div class="col-md-6">
+                                            {% if user.computing_id %}
+                                                <p>{{ user.computing_id }}</p>
+                                            {% else %}
+                                                <p>None</p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <label>Email</label>
+                                        </div>
+                                        <div class="col-md-6">
+                                            {% if user.email %}
+                                                <p>{{ user.email }}</p>
+                                            {% else %}
+                                                <p>None</p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <label>Phone</label>
+                                        </div>
+                                        <div class="col-md-6">
+                                            {% if user.phone_number %}
+                                                <p>{{ user.phone_number }}</p>
+                                            {% else %}
+                                                <p>None</p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <label>Joined on</label>
+                                        </div>
+                                        <div class="col-md-6">
+                                            {% if user.profile.joined_date %}
+                                                <p>{{ user.profile.joined_date }}</p>
+                                            {% else %}
+                                                <p>None</p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <label>Bio</label> <br>
+                                    {% if user.bio %}
+                                        <p class="col-md-10" style="overflow-wrap: break-word;">
+                                            {{ user.bio }}
+                                        </p>
+                                    {% else %}
+                                        <p class="col-md-10" style="overflow-wrap: break-word;">
+                                            This person remains a mystery.
+                                        </p>
+                                    {% endif %}
+                            </div>
+                        <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                            <div class="list-group list-group-flush" style="width: 80%">
+                                    {% if user.post_set.all.count != 0 %}
+                                    <ul class="media-list pl-0">
+                                        {% for post in posts %}
+                                        <div id="post_border" class="media rounded p-1">
+                                            <div class="media-left">
+                                            <a href="#">
+                                                <img class="media-object mr-3 rounded" width="64" height="64" src="{{ post.cover.url }}"
+                                                    alt="Post cover.">
+                                            </a>
+                                            </div>
+                                            <div class="media-body">
+                                            <div class="row justify-content-between">
+                                                <div class="inline-flex ml-3 text-primary">
+                                                <a href="{% url 'main:detail_post' post.owner.username post.post_id %}">
+                                                    <h5 class="media-heading">{{ post.title }}</h5>
+                                                </a>
+                                                </div>
+                                                <div class="inline-flex mr-3 text-muted"><h5>${{ post.price|floatformat:2 }}</h5></div>
+                                            </div>
+                                            <div class="text-muted">{{ post.description|brief_description }}</div>
+                                            <!-- <h6 class="font-weight-bold mt-2">Replies</h6>
+                                            {% for message in recieved_messages %}
+                                                {% if message.to_post == post %}
+                                                <div class="media border rounded p-1 mt-1">
+                                                    <a class="media-left" href="#"><img class="media-object mr-3 rounded" width="32" height="32"
+                                                                                        src="{{ message.from_who.image.url }}"
+                                                                                        alt="Sender avatar"></a>
+                                                    <div class="media-body">
+                                                    <div><a href="mailto:{{ message.from_who.user.email }}">
+                                                        {{ message.from_who }}</a>: {{ message.text }}
+                                                    </div>
+                                                    <div class="text-muted">{{ message.time_sent|timesince }} ago</div>
+                                                    </div>
+                                                </div>
+                                                {% endif %}
+                                            {% endfor %} -->
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                    </ul>
+                                {% else %}
+                                    <div class="alert alert-warning">No posts available!</div>
+                                {% endif %}
+                            </div>     
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>           
+    </div>
+{% endif %}
+{% endblock content %}

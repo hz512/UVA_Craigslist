@@ -1,0 +1,15 @@
+{% extends "main/base.html" %}
+{% block title %}
+UVA Craigslist | Detele Post
+{% endblock title %}
+{% block content %}
+<div style="margin: 2% 25% 0px 25%">
+	<h4>Do you want to delete the following post?</h4>
+	<p>{{ post.title }}</p>
+	<p style="color:red"><strong>Warning</strong>: You cannot undo deletion.</p>
+	<button onclick="location.href='{% url 'main:delete_done' user.username post.post_id %}'" type="button" class="btn btn-outline-danger">
+	Yes, Delete</button>  
+	<button style="margin-left: 20px" onclick="location.href='{% url 'main:detail_post' user.username post.post_id %}'" type="button" class="btn btn-outline-secondary">
+	Cancel</button>  
+</div>
+{% endblock content %}

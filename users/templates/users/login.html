@@ -1,0 +1,26 @@
+{% extends "main/base.html" %}
+{% load crispy_forms_tags %}
+{% block title %}
+UVA Craigslist | Log In
+{% endblock title %}
+{% block content %}
+ 	<div class="content-section" style="margin: 25px 25% 25px 25%; width: 50%;">
+        <form method="POST">
+            {% csrf_token %}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4">Log in to Your Account&nbsp;
+                    <small style="font-size: 11pt"><a href= "{% url 'social:begin' 'google-oauth2' %}">Log In with Google</a></small>
+                </legend>
+                {{ form|crispy }}
+            </fieldset>
+            <div class="form-group">
+                <button class="btn btn-outline-info" type="submit">Log in</button>
+            </div>
+        </form>
+        <div class="border-top pt-3">
+            <small class="text-muted">
+                Don't have an account? <a class="ml-2" href="{% url 'users:signup' %}">Sign up</a>
+            </small>
+        </div>
+    </div>
+{% endblock content %}

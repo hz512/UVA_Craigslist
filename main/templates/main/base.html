@@ -1,0 +1,81 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>{% block title %}{% endblock %}</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon"
+        href="https://i.pinimg.com/236x/65/fd/23/65fd23aae970644c82ce0602f00ac525--university-of-virginia-stickers.jpg">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+  {% block head %}{% endblock %}
+  <style>
+    .fakeimg {
+      height: 200px;
+      background: #aaa;
+    }
+
+    .thumbnail {
+      object-fit: contain;
+      height: 40px;
+      width: 40px;
+    }
+  </style>
+</head>
+
+<body>
+<nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+  <a class="navbar-brand" href="{% url 'main:index' %}" style="margin-left: 11%">UVA Craigslist</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="collapsibleNavbar" style="margin-left: 50%">
+    <ul class="navbar-nav" style="text-align:right">
+      <li class="nav-item" type="link">
+        <a class="nav-link" href="{% url 'main:index' %}">Home</a>
+      </li>
+      {% if user.is_authenticated %}
+        <li class="nav-item" type="link">
+          <a class="nav-link" href="{% url 'main:profile' %}">Profile</a>
+        </li>
+        <li class="nav-item" type="link">
+          <a class="nav-link" href="{% url 'main:cart' %}">Cart</a>
+        </li>
+        <li class="nav-item" type="link">
+          <a class="nav-link" href="{% url 'users:logout' %}">Log out</a>
+        </li>
+      {% else %}
+        <li class="nav-item" type="link">
+          <a class="nav-link" href="{% url 'users:login' %}">Log in</a>
+        </li>
+        <li class="nav-item" type="link">
+          <a class="nav-link" href="{% url 'users:signup' %}">Sign up</a>
+        </li>
+      {% endif %}
+    </ul>
+  </div>
+</nav>
+
+<div class="content" style="min-height: 90vh">
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }}">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+  {% block content %}{% endblock %}
+</div>
+
+
+<footer id="sticky-footer" class="py-4 bg-dark text-white-50">
+  <div class="container text-center">
+    <small>Copyright &copy; OutLawz · Powered by <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>, <a
+        href="https://www.w3schools.com" target="_blank">W3Schools</a></small>
+  </div>
+</footer>
+</body>
+</html>

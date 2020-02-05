@@ -1,0 +1,66 @@
+{% extends "main/base.html" %}
+{% load static %}
+{% load formatters %}
+{% block title %} 
+UVA Craigslist | All Messages
+{% endblock title %} 
+
+{% block content %}
+
+{% if not_owner_error %}
+	<p style="text-align: center; color: red;"><strong>{{ not_owner_error }}</strong></p>
+{% else %}
+	<div class="content-section" style="margin: 25px 23% 25px 23%;">
+		<legend class="border-bottom mb-4">All Messages</legend>
+		{% for message in message_set %}
+			<div style="border-bottom:1px solid #ccc!important; padding: 13px 0 2px 0;">
+				{% if message.read == true %}
+					{% if message.sender == owner %}
+						<strong><a href="{% url 'main:leave_message' owner.username post.post_id message.receiver %}">
+						Dialogue with {{ message.receiver }}</a></strong>
+					{% else %}
+						<strong><a href="{% url 'main:leave_message' owner.username post.post_id message.sender.username %}">
+						Dialogue with {{ message.sender.username }}</a></strong>
+					{% endif %}
+					<br>
+					<i>Last message:</i> {{ message.sender }}<small> at {{ message.time_sent }}: </small>
+					<p style="padding-left: 10px">{{ message.text|brief_description_80 }}</p>
+				{% else %}
+					{% if message.sender == owner %}
+						<strong><a href="{% url 'main:leave_message' owner.username post.post_id message.receiver %}">
+						Dialogue with {{ message.receiver }}</a></strong>
+					{% else %}
+						<strong><a href="{% url 'main:leave_message' owner.username post.post_id message.sender.username %}">
+						Dialogue with {{ message.sender.username }}  </a><small><i style="color: red">new message!</i></small></strong>
+					{% endif %}
+					<br>
+					<i>Last message:</i> {{ message.sender }}<small> at {{ message.time_sent }}: </small>
+					<p style="padding-left: 10px">{{ message.text|brief_description_80 }}</p>
+				{% endif %}
+			</div>
+		{% endfor %}
+		    <div style="margin-top: 30px; text-align: center">
+		        {% if is_paginated %}
+		          {% if page_obj.has_previous %}
+		            <a class="btn btn-outline-info mb-2" href="?page=1"><<</a>
+		            <a class="btn btn-outline-info mb-2" href="?page={{ page_obj.previous_page_number }}"><</a>
+		          {% endif %}
+
+		          {% for num in page_obj.paginator.page_range %}
+		            {% if page_obj.number == num %}
+		              <a class="btn btn-info mb-2" href="?page={{ num }}">{{ num }}</a>
+		            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+		              <a class="btn btn-outline-info mb-2" href="?page={{ num }}">{{ num }}</a>
+		            {% endif %}
+		          {% endfor %}
+
+		          {% if page_obj.has_next %}
+		            <a class="btn btn-outline-info mb-2" href="?page={{ page_obj.next_page_number }}">></a>
+		            <a class="btn btn-outline-info mb-2" href="?page={{ page_obj.paginator.num_pages }}">>></a>
+		          {% endif %}
+		        {% endif %}
+		    </div>
+	</div>
+{% endif %}
+
+{% endblock content %}

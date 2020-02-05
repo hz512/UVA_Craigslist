@@ -1,0 +1,82 @@
+{% extends "main/base.html" %}
+{% load crispy_forms_tags %}
+{% load formatters %}
+{% block title %}
+UVA Craigslist | Leave Message
+{% endblock title %}
+{% block content %}
+
+{% if clientname_error %}
+	<p style="text-align: center; color: red;"><strong>{{ clientname_error }}</strong></p>
+{% elif self_conversation_error %}
+	<p style="text-align: center; color: red;"><strong>{{ self_conversation_error }}</strong></p>
+{% elif not_yours_error %}
+	<p style="text-align: center; color: red;"><strong>{{ not_yours_error }}</strong></p>
+{% else %}
+	<div class="content-section" style="margin: 25px 20% 25px 20%;">
+	    <form method="POST">
+		    {% csrf_token %}
+		    <fieldset class="form-group">
+		        <legend class="border-bottom mb-4">Dialogue</legend>
+		        {% if message_set.count == 0 %}
+		        	<strong>You haven't sent a message yet.</strong>
+		        {% else %}
+					{% if curr_user == owner %}
+						{% for message in other_messages_client %}
+							{% if unread_client_messages|exclude:message == False %}
+								<div style="border-bottom:1px solid #ccc!important; padding: 8px 0 8px 0;">
+									<a href="{% url 'main:nonlogin_profile' message.sender.username %}">
+										{{ message.sender }}
+									</a><small> at {{ message.time_sent }}</small>:
+									<br>
+									{{ message.text }}
+								</div>
+							{% endif %}
+						{% endfor %}
+						{% for message in unread_client_messages %}
+							<div style="border-bottom:1px solid #ccc!important; padding: 8px 0 8px 0;">
+								<strong><a href="{% url 'main:nonlogin_profile' message.sender.username %}">
+									{{ message.sender }}
+								</a><small> at {{ message.time_sent }}</small></strong>:
+								<br>
+								<strong>{{ message.text }}</strong>
+								
+							</div>
+						{% endfor %}
+					{% else %}
+						{% for message in other_messages_owner %}
+							{% if unread_owner_messages|exclude:message == False %}
+								<div style="border-bottom:1px solid #ccc!important; padding: 8px 0 8px 0;">
+									<a href="{% url 'main:nonlogin_profile' message.sender.username %}">
+										{{ message.sender }}
+									</a><small> at {{ message.time_sent }}</small>:
+									<br>
+									{{ message.text }}
+								</div>
+							{% endif %}
+						{% endfor %}
+						{% for message in unread_owner_messages %}
+							<div style="border-bottom:1px solid #ccc!important; padding: 8px 0 8px 0;">
+								<strong><a href="{% url 'main:nonlogin_profile' message.sender.username %}">
+									{{ message.sender }}
+								</a><small> at {{ message.time_sent }}</small></strong>:
+								<br>
+								<strong>{{ message.text }}</strong>
+							</div>
+						{% endfor %}
+					{% endif %}
+				{% endif %}
+				<br> <br>
+		        {{ form|crispy }}
+		    </fieldset>
+		    <div class="form-group">
+		    	<button class="btn btn-outline-info" type="button" 
+		        onclick="location.href='{% url 'main:detail_post' owner.username post.post_id %}'">
+		        Return to post</button>
+		        <button class="btn btn-outline-info" type="submit" style="margin-left: 2%">Send</button>
+		    </div>
+		</form> 
+	</div>
+{% endif %}
+
+{% endblock content %}

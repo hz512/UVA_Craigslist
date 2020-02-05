@@ -1,0 +1,20 @@
+{% extends "main/base.html" %}
+{% load crispy_forms_tags %}
+{% block title %}
+UVA Craigslist | Update Post
+{% endblock title %}
+{% block content %}
+<div class="content-section" style="margin: 25px 15% 25px 15%; width: 70%;">
+    <form method="POST" enctype="multipart/form-data">
+	    {% csrf_token %}
+	    <fieldset class="form-group">
+	        <legend class="border-bottom mb-4">Update Your Post</legend>
+	        {{ form|crispy }}
+	        {{ image_form|crispy }}
+	    </fieldset>
+	    <div class="form-group">
+	        <button class="btn btn-outline-info" type="submit">Update</button>
+	    </div>
+	</form> 
+</div>
+{% endblock content %}
